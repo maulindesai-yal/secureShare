@@ -75,8 +75,8 @@
 
         button {
             border-radius: 20px;
-            border: 1px solid #8e44ad;
-            background-color: #8e44ad;
+            border: 1px solid #3498db;
+            background-color: #3498db;
             color: #ffffff;
             font-size: 14px;
             font-weight: bold;
@@ -89,7 +89,7 @@
         }
 
         button:hover {
-            background-color: #732d91;
+            background-color: #0c7dc8;
         }
 
         button:active {
@@ -102,11 +102,25 @@
         }
 
         .register-link a {
-            color: #8e44ad;
+            color: #3498db;
             text-decoration: none;
         }
 
         .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        .forgot-password {
+            margin-top: 10px;
+            font-size: 12px;
+        }
+
+        .forgot-password a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        .forgot-password a:hover {
             text-decoration: underline;
         }
     </style>
@@ -118,10 +132,13 @@
             {% csrf_token %}
             <input type="email" placeholder="Email" name="email" required />
             <input type="password" placeholder="Password" name="password" required />
+            <div class="forgot-password">
+                <a href="{% url 'password_reset' %}">Forgot Password?</a>
+            </div>
             <button type="submit">Login</button>
         </form>
         <div class="register-link">
-            <span>Don't have an account? </span><a href="#">Register here</a>
+            <span>Don't have an account? </span><a href="{% url 'register' %}">Register here</a>
         </div>
     </div>
 </body>

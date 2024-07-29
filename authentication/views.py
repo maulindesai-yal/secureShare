@@ -1,5 +1,8 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate, login
+from django.contrib import messages
+from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.hashers import make_password
 from .models import CustomUser
 
@@ -19,7 +22,7 @@ def register(request):
         if CustomUser.objects.filter(email=email).exists():
             return render(request,'register.html',{'error':'Email already exists'})
         
-
+        
         user = CustomUser(
             first_name=first_name,
             last_name=last_name,
@@ -38,18 +41,22 @@ def user_login(request):
         password = request.POST.get('password')
         user = authenticate(request,email=email,password=password)
         
+        print(f"Login attempt: email={email}, authenticated={user is not None}")
+
         if user is not None:
             login(request,user)
-            return redirect ("home")
+            return redirect ("dashboard")
         else:
             return render (request, 'registration/login.html',{'error':'Invalid credentials'})
     
     return render (request,'registration/login.html')
 
 
-def home(request):
-    if not request.user.is_authenticated:
-        return redirect ('login')
-    return render (request,'registration/home.html')
+@login_required(login_url='login')
+def dashboard(request):
+    return render (request,'home_templates/dashboard.html')
 
-
+def logout_user(request):
+    auth_logout(request)
+    messages.success(request, "You have been logged out successfully.")
+    return redirect ('login')

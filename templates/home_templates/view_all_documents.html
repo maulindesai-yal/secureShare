@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View All Documents</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(120deg, #bdc3c7, #2c3e50);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+        }
+
+        .sidebar h2 {
+            margin-bottom: 20px;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .sidebar li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar a {
+            color: #ecf0f1;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .sidebar a:hover {
+            color: #3498db;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+            background-color: #ecf0f1;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        .user-profile-icon {
+            cursor: pointer;
+            background-color: #3498db;
+            color: white;
+            border-radius: 50%;
+            padding: 10px;
+            margin-right: 10px;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .dropdown-menu a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .document-categories, .recent-activity, .view-all-documents {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .document-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .document-table th, .document-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .document-table th {
+            background-color: #f2f2f2;
+        }
+
+        .document-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .action-button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .action-button:hover {
+            background-color: #2980b9;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2><a href="{% url 'dashboard' %}">SecureShare</a></h2>
+        <ul>
+            <li><a href="{% url 'view_all_documents' %}">My Documents</a></li>
+            <li><a href="{% url 'upload_new_document' %}">Upload New Document</a></li>
+            <li><a href="#">Shared Documents</a></li>
+            <li><a href="#">Access Requests</a></li>
+        </ul>
+    </div>
+    <div class="main-content">
+        <div class="header">
+            <h1>All Documents</h1>
+            <div class="header-right">
+                <div class="user-profile">
+                    <div class="user-profile-icon">👤</div>
+                    <div class="dropdown-menu">
+                        <a href="#">Settings</a>
+                        <a href="{% url 'logout' %}">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="view-all-documents">
+            <h2>Documents</h2>
+            <table class="document-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Document Type</th>
+                        <th>Uploaded By</th>
+                        <th>Created At</th>
+                        <th>Size (bytes)</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for document in documents %}
+                    <tr>
+                        <td>{{ document.title }}</td>
+                        <td>{{ document.document_type }}</td>
+                        <td>{{ document.user_id.first_name }} {{ document.user_id.last_name }}</td>
+                        <td>{{ document.created_at }}</td>
+                        <td>{{ document.size }}</td>
+                        <td>{{ document.description|truncatechars:50 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6">No documents available.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="footer">
+            <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a> | <a href="#">Help/Support</a>
+        </div>
+    </div>
+
+    <script>
+        // Toggle dropdown menu
+        document.querySelector('.user-profile-icon').addEventListener('click', function() {
+            document.querySelector('.dropdown-menu').style.display = 
+            document.querySelector('.dropdown-menu').style.display === 'block' ? 'none' : 'block';
+        });
+    </script>
+</body>
+</html>
